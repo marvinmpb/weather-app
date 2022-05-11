@@ -14,68 +14,90 @@ function getIconUrl(iconId) {
 
 function Meteo({
   cityname,
+  inputValue,
+  setInputValue,
+  onSubmit,
+  showData,
+  searchValue,
+  setShowData,
+  city,
+  weather,
+  temperature,
   className,
-  ...rest
+  // ...rest
 }) {
-  const [weather, setWeather] = useState(null);
-  const [temperature, setTemperature] = useState(null);
-  const [city, setCity] = useState(null);
+  // const [weather, setWeather] = useState(null);
+  // const [temperature, setTemperature] = useState(null);
+  // const [city, setCity] = useState(null);
   const dateValue = new Date()
   const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
   const date = dateValue.toLocaleDateString('fr', options)
 
 
-  useEffect(() => {
-    const callRequest = async () => {
-      const response = await meteoRequest(cityname);
+  // useEffect(() => {
+  //   const callRequest = async () => {
+  //     const response = await meteoRequest(inputValue);
 
-      // verifier response.status
-      if (response.status === 200) {
-        setTemperature(response.data.main.temp);
-        setCity(response.data.name);
-        setWeather(response.data.weather[0]);
-      }
-    };
-    callRequest();
-  }, [cityname]);
+  //     // verifier response.status
+  //     if (response.status === 200) {
+  //       setTemperature(response.data.main.temp);
+  //       setCity(response.data.name);
+  //       setWeather(response.data.weather[0]);
+  //       setShowData(true)
+  //     }
+  //   };
+  //   callRequest();
+  // }, [onSubmit]);
 
   return (
-    <Paper
-      elevation={3}
-      className={classnames(
-        'meteo',
-        className,
-        { [`meteo__${weather?.main}`]: !!weather },
-      )}
-      as="article"
-      {...rest}
-    >
-      <div className="meteo--icon">
-        <img src={getIconUrl(weather?.icon)} alt={`${weather?.description}`} />
-      </div>
-      <div className="meteo--info">
-        <div className='date'>{date}</div>
-        <Typography
-          className="meteo--title"
-          as="h3"
-          sx={{ fontSize: '1.5rem' }}
-        >
-          {city}
-        </Typography>
-        <Typography
-          as="p"
-          sx={{ fontSize: '1.2rem' }}
-        >
-          {Math.round(temperature)}°
-        </Typography>
-        <Typography
-          as="p"
-          className="meteo--weather"
-        >
-          {weather?.description}
-        </Typography>
-      </div>
-    </Paper>
+    <>
+      {
+        showData ?
+          (
+            <Paper
+              elevation={3}
+              className={classnames(
+                'meteo',
+                className,
+                { [`meteo__${weather?.main}`]: !!weather },
+              )}
+              as="article"
+            // {...rest}
+            >
+              <div className="meteo--icon">
+                <img src={getIconUrl(weather?.icon)} alt={`${weather?.description}`} />
+              </div>
+              <div className="meteo--info">
+                <div className='date'>{date}</div>
+                <Typography
+                  className="meteo--title"
+                  as="h3"
+                  sx={{ fontSize: '1.5rem' }}
+                >
+                  {city}
+                </Typography>
+                <Typography
+                  as="p"
+                  sx={{ fontSize: '1.2rem' }}
+                >
+                  {Math.round(temperature)}°
+                </Typography>
+                <Typography
+                  as="p"
+                  className="meteo--weather"
+                >
+                  {weather?.description}
+                </Typography>
+              </div>
+            </Paper>
+          )
+          :
+
+          (
+            <p>Aucun résultat</p>
+          )
+      }
+    </>
   );
 }
 
